@@ -3,3 +3,6 @@
 test*.o
 *.a
 test
+*.o
+*.a
+test
