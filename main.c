@@ -1,11 +1,74 @@
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
+ 
+size_t	ft_strlen(const char *s);
+ssize_t	ft_write(int fd, const void *buf, size_t count);
+ssize_t	ft_read(int fd, void *buf, size_t count);
 
-size_t ft_strlen(const char *s);
-
-int main(void)
+static void	test_strlen(const char *s)
 {
-    printf("ft_strlen : %zu\n", ft_strlen("hello"));
-    printf("strlen    : %zu\n", strlen("hello"));
-    return 0;
+	printf("\"%s\" -> ft_strlen: %zu | strlen: %zu\n", s, ft_strlen(s), strlen(s));
+}
+
+static void	test_write(int fd, const char *s, size_t n)
+{
+	ssize_t	ret;
+
+	errno = 0;
+	ret = ft_write(fd, s, n);
+	printf(" <- ft_write: ret=%zd errno=%d\n", ret, errno);
+	errno = 0;
+	ret = write(fd, s, n);
+	printf(" <- write:    ret=%zd errno=%d\n\n", ret, errno);
+}
+
+/* path == NULL : utilise fd tel quel (pour tester un fd invalide) */
+static void	test_read(const char *path, int fd, size_t n)
+{
+	char	buf[32];
+	ssize_t	ret;
+ 
+	if (path)
+		fd = open(path, O_RDONLY);
+	memset(buf, 0, sizeof(buf));
+	errno = 0;
+	ret = ft_read(fd, buf, n);
+	printf("ft_read: ret=%zd errno=%d buf=\"%s\"\n", ret, errno, buf);
+	if (path)
+	{
+		close(fd);
+		fd = open(path, O_RDONLY);
+	}
+	memset(buf, 0, sizeof(buf));
+	errno = 0;
+	ret = read(fd, buf, n);
+	printf("read:    ret=%zd errno=%d buf=\"%s\"\n\n", ret, errno, buf);
+	if (path)
+		close(fd);
+}
+
+int	main(void)
+{
+	printf("===== ft_strlen =====\n");
+	test_strlen("");
+	test_strlen("e");
+	test_strlen("hello world");
+	test_strlen("abc\0def");
+
+	printf("\n===== ft_write =====\n");
+	fflush(stdout);
+	test_write(1, "hello", 5);
+	test_write(1, "hello", 0);
+	test_write(1, "hello", 3);
+	test_write(-1, "hello", 5);
+
+    printf("===== ft_read =====\n");
+	test_read("main.c", 0, 10);
+	test_read("main.c", 0, 0);
+	test_read(NULL, -1, 10);
+	test_read(".", 0, 10);
+	return (0);
 }
