@@ -15,7 +15,7 @@ clean:
 	rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) test
 
 re: fclean all
 
@@ -26,7 +26,10 @@ test: $(NAME)
 
 
 
-# ar rcs = making .a form .o replace create symbolIndex
+# ar rcs = making .a from .o
+# r = insert .o in .a
+# c = create archive if doesnt
+# s = symbolindex
 
 # ar -f elf64
 # -f = format			elf64 = linux ex 64 bits

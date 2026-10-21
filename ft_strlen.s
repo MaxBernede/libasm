@@ -4,7 +4,7 @@ ft_strlen:
 	xor rcx, rcx ; reset the counter to 0, also mov rcx, 0 works
 .loop:
 	cmp byte [rdi + rcx], 0
-	jz .done
+	jz .done ; jump if zero
 	inc rcx
 	jmp .loop
 .done:

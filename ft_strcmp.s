@@ -1,11 +1,12 @@
 global ft_strcmp
 
-ftrcmp:
+ft_strcmp:
 .loop:
 	mov al, [rdi]	; load byte first stirng
-	cmp al. [rsi]	; compare to second string
+	cmp al, [rsi]	; compare to second string
 	jne .diff		; if not requal jump diff Jne = jump not equal
-	test al, al		; check its not null
+	cmp al, 0	; check its not null | same as test al, al
+	jz .equal
 	inc rdi			; pointer ++
 	inc rsi			; ++
 	jmp .loop
@@ -14,5 +15,5 @@ ftrcmp:
 	movzx rax, al	; change 8bits to 64 to return it
 	ret
 .equal:
-	xor rax, rax	; return 0 for equal
+	xor eax, eax	; return 0 for equal | same as rax
 	ret
